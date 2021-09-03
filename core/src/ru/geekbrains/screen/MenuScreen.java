@@ -1,107 +1,70 @@
 package ru.geekbrains.screen;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 
 import ru.geekbrains.base.BaseScreen;
+import ru.geekbrains.math.Rect;
+import ru.geekbrains.sprite.Background;
+import ru.geekbrains.sprite.Logo;
+
 
 public class MenuScreen extends BaseScreen {
 
     private Texture img;
-    private Texture bgimg;
-    private Vector2 pos;
-    private Vector2 touch;
-    private Vector2 v;
+    private Texture bg;
     private Vector2 dest;
-    private Vector2 step;
-    private final float speed = 1.5f / 60;
+
+    private Background background;
+    private Logo logo;
 
     @Override
     public void show() {
         super.show();
-        img = new Texture("tie-small.png");
-        bgimg = new Texture("wall.jpg");
-        pos = new Vector2();
-        touch = new Vector2();
-        v = new Vector2();
-        step = new Vector2();
         dest = new Vector2();
+        img = new Texture("tie-small.png");
+        bg = new Texture("wall.jpg");
+        background = new Background(bg);
+        logo = new Logo(img);
+    }
+
+    @Override
+    public void resize(Rect worldBounds) {
+        super.resize(worldBounds);
+        background.resize(worldBounds);
+        logo.resize(worldBounds);
     }
 
     @Override
     public void render(float delta) {
         super.render(delta);
-        batch.begin();
-        batch.draw(bgimg, 0, 0, 1920, 1080);
-        batch.draw(img, pos.x, pos.y);
-        batch.end();
-        if (!isHover()) {
-            calculateStep();
-            pos.add(step);
-        }
+        update(delta);
+        draw();
     }
 
     @Override
     public void dispose() {
         super.dispose();
         img.dispose();
-    }
-
-    public void calculateStep() {
-        step = dest.cpy().sub(pos);
-        step.x = step.x * speed ;
-        step.y = step.y * speed;
-    }
-
-    public boolean isHover() {
-        float x = dest.x;
-        float y = dest.y;
-        return x >= pos.x && x <= pos.x + img.getWidth()
-                && y >= pos.y && y <= pos.y + img.getHeight();
+        bg.dispose();
     }
 
     @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        touch.set(screenX, Gdx.graphics.getHeight() - screenY);
+    public boolean touchDown(Vector2 touch, int pointer, int button) {
         dest.set(touch);
-        if (!isHover()) {
-            calculateStep();
+        return super.touchDown(touch, pointer, button);
+    }
+
+    private void update(float delta) {
+        if (!logo.pos.equals(dest)) {
+            logo.move(dest);
         }
-        return super.touchDown(screenX, screenY, pointer, button);
     }
 
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        touch.set(screenX, Gdx.graphics.getHeight() - screenY);
-        pos.set(touch);
-        return super.touchDragged(screenX, screenY, pointer);
+    private void draw() {
+        batch.begin();
+        background.draw(batch);
+        logo.draw(batch);
+        batch.end();
     }
-
-    @Override
-    public boolean keyDown(int keycode) {
-        switch (keycode) {
-            case Input.Keys.UP:
-                v.set(0, 5);
-                break;
-            case Input.Keys.DOWN:
-                v.set(0, -5);
-                break;
-            case Input.Keys.RIGHT:
-                v.set(5, 0);
-                break;
-            case Input.Keys.LEFT:
-                v.set(-5, 0);
-                break;
-        }
-        return super.keyDown(keycode);
-    }
-
-    @Override
-    public boolean keyUp(int keycode) {
-        v.setZero();
-        return super.keyUp(keycode);
-    }
-
 }
