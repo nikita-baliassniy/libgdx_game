@@ -12,9 +12,11 @@ public class Logo extends Sprite {
     private static final float V_LEN = 0.02f;
     private Vector2 v;
     private Rect worldBounds;
+    private Vector2 destination;
 
     public Logo(Texture texture) {
         super(new TextureRegion(texture));
+        destination = new Vector2();
         v = new Vector2();
     }
 
@@ -24,28 +26,36 @@ public class Logo extends Sprite {
         setHeightProportion(worldBounds.getHeight() / (float) 10);
     }
 
-    public void move(Vector2 destination) {
-        Vector2 tmp = new Vector2();
-        tmp.set(destination);
-        v.set(tmp.cpy().sub(this.pos)).setLength(V_LEN);
-        float length = tmp.sub(this.pos).len();
-        if (length > V_LEN) {
-            pos.add(v);
-            if (this.getTop() > worldBounds.getTop()) {
-                this.setTop(worldBounds.getTop());
-            }
-            if (this.getLeft() < worldBounds.getLeft()) {
-                this.setLeft(worldBounds.getLeft());
-            }
-            if (this.getRight() > worldBounds.getRight()) {
-                this.setRight(worldBounds.getRight());
-            }
-            if (this.getBottom() < worldBounds.getBottom()) {
-                this.setBottom(worldBounds.getBottom());
-            }
-        } else {
-            this.pos.set(destination);
-        }
-
+    @Override
+    public boolean touchDown(Vector2 touch, int pointer, int button) {
+        this.destination = touch;
+        return super.touchDown(touch, pointer, button);
     }
+
+    @Override
+    public void update(float delta) {
+        super.update(delta);
+        if (!pos.equals(destination)) {
+            v.set(destination.cpy().sub(this.pos)).setLength(V_LEN);
+            float length = destination.dst(pos);
+            if (length > V_LEN) {
+                pos.add(v);
+                if (this.getTop() > worldBounds.getTop()) {
+                    this.setTop(worldBounds.getTop());
+                }
+                if (this.getLeft() < worldBounds.getLeft()) {
+                    this.setLeft(worldBounds.getLeft());
+                }
+                if (this.getRight() > worldBounds.getRight()) {
+                    this.setRight(worldBounds.getRight());
+                }
+                if (this.getBottom() < worldBounds.getBottom()) {
+                    this.setBottom(worldBounds.getBottom());
+                }
+            } else {
+                this.pos.set(destination);
+            }
+        }
+    }
+
 }
