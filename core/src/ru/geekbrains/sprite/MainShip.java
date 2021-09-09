@@ -61,7 +61,15 @@ public class MainShip extends Sprite {
     @Override
     public void update(float delta) {
         pos.mulAdd(v, delta);
+        checkBounds();
+        shootTimer++;
+        if(shootTimer >= delta * shootSpeedParam) {
+            shoot();
+            shootTimer = 0;
+        }
+    }
 
+    private void checkBounds() {
         if (getRight() > worldBounds.getRight()) {
             setRight(worldBounds.getRight());
             stop();
@@ -69,14 +77,6 @@ public class MainShip extends Sprite {
         if (getLeft() < worldBounds.getLeft()) {
             setLeft(worldBounds.getLeft());
             stop();
-        }
-        if (System.currentTimeMillis() % 100 == 0) {
-            shoot();
-        }
-        shootTimer++;
-        if(shootTimer >= delta * shootSpeedParam) {
-            shoot();
-            shootTimer = 0;
         }
     }
 
