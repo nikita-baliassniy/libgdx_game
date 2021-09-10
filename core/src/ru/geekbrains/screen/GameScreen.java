@@ -121,6 +121,7 @@ public class GameScreen extends BaseScreen {
         }
         mainShip.update(delta);
         bulletPool.updateActiveSprites(delta);
+        enemyPool.crashTest(mainShip);
         enemyPool.updateActiveSprites(delta);
 
         enemyEmitter.generate(delta);

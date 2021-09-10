@@ -16,6 +16,7 @@ public class Ship extends Sprite {
     protected Sound bulletSound;
     protected BulletPool bulletPool;
     protected TextureRegion bulletRegion;
+    protected TextureRegion[] explosionRegions;
     protected Vector2 bulletV;
     protected Vector2 bulletPos;
     protected float bulletHeight;
@@ -25,7 +26,6 @@ public class Ship extends Sprite {
     protected float reloadInterval;
 
     protected Rect worldBounds;
-
     protected int hp;
 
     public Ship() {
@@ -38,7 +38,6 @@ public class Ship extends Sprite {
     @Override
     public void update(float delta) {
         pos.mulAdd(v, delta);
-
         reloadTimer += delta;
         if (reloadTimer >= reloadInterval) {
             reloadTimer = 0f;
