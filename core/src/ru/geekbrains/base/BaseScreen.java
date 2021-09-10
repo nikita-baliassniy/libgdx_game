@@ -3,7 +3,6 @@ package ru.geekbrains.base;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
@@ -16,7 +15,7 @@ import ru.geekbrains.math.Rect;
 public class BaseScreen implements Screen, InputProcessor {
 
     private Rect screenBounds;
-    private Rect worldBounds;
+    protected Rect worldBounds;
     private Rect glBounds;
 
     private Matrix4 worldToGl;
@@ -25,7 +24,6 @@ public class BaseScreen implements Screen, InputProcessor {
     private Vector2 touch;
 
     protected SpriteBatch batch;
-    protected Music music;
 
     @Override
     public void show() {
@@ -33,14 +31,14 @@ public class BaseScreen implements Screen, InputProcessor {
         screenBounds = new Rect();
         worldBounds = new Rect();
         glBounds = new Rect(0, 0, 1f, 1f);
+
         worldToGl = new Matrix4();
         screenToWorld = new Matrix3();
+
         touch = new Vector2();
+
         batch = new SpriteBatch();
         Gdx.input.setInputProcessor(this);
-        music = Gdx.audio.newMusic(Gdx.files.internal("sounds/music.mp3"));
-        music.setLooping(true);
-        music.play();
     }
 
     @Override
@@ -70,13 +68,11 @@ public class BaseScreen implements Screen, InputProcessor {
 
     @Override
     public void pause() {
-        music.pause();
         System.out.println("pause");
     }
 
     @Override
     public void resume() {
-        music.play();
         System.out.println("resume");
     }
 
@@ -89,7 +85,6 @@ public class BaseScreen implements Screen, InputProcessor {
     @Override
     public void dispose() {
         System.out.println("dispose");
-        music.stop();
         batch.dispose();
     }
 
@@ -160,5 +155,4 @@ public class BaseScreen implements Screen, InputProcessor {
         System.out.println("scrolled amountX = " + amountX + " amountY = " + amountY);
         return false;
     }
-
 }
