@@ -1,7 +1,8 @@
 package ru.geekbrains.sprite;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -34,8 +35,14 @@ public class MainShip extends Sprite {
 
     private Rect worldBounds;
 
+    private final Sound shootSound;
+    private final int shootSpeedParam = 500;
+    private int shootTimer;
+
     public MainShip(TextureAtlas atlas, BulletPool bulletPool) {
         super(atlas.findRegion("main_ship"), 1, 2, 2);
+        this.shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav"));
+        this.shootTimer = 0;
         this.bulletPool = bulletPool;
         bulletRegion = atlas.findRegion("bulletMainShip");
         bulletV = new Vector2(0, 0.5f);
@@ -54,7 +61,15 @@ public class MainShip extends Sprite {
     @Override
     public void update(float delta) {
         pos.mulAdd(v, delta);
+        checkBounds();
+        shootTimer++;
+        if(shootTimer >= delta * shootSpeedParam) {
+            shoot();
+            shootTimer = 0;
+        }
+    }
 
+    private void checkBounds() {
         if (getRight() > worldBounds.getRight()) {
             setRight(worldBounds.getRight());
             stop();
@@ -63,13 +78,6 @@ public class MainShip extends Sprite {
             setLeft(worldBounds.getLeft());
             stop();
         }
-
-//        if (getLeft() > worldBounds.getRight()) {
-//            setRight(worldBounds.getLeft());
-//        }
-//        if (getRight() < worldBounds.getLeft()) {
-//            setLeft(worldBounds.getRight());
-//        }
     }
 
     @Override
@@ -167,6 +175,7 @@ public class MainShip extends Sprite {
 
     private void shoot() {
         Bullet bullet = bulletPool.obtain();
+        shootSound.play();
         bulletPos.set(pos.x, pos.y + getHalfHeight());
         bullet.set(this, bulletRegion, bulletPos, bulletV, bulletHeight, worldBounds, bulletDamage);
     }
