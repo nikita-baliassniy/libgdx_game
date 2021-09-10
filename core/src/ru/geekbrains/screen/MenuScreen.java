@@ -9,7 +9,6 @@ import ru.geekbrains.base.BaseScreen;
 import ru.geekbrains.math.Rect;
 import ru.geekbrains.sprite.Background;
 import ru.geekbrains.sprite.ExitButton;
-import ru.geekbrains.sprite.Logo;
 import ru.geekbrains.sprite.PlayButton;
 import ru.geekbrains.sprite.Star;
 
