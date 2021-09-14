@@ -7,41 +7,31 @@ import com.badlogic.gdx.math.Vector2;
 import ru.geekbrains.base.Ship;
 import ru.geekbrains.math.Rect;
 import ru.geekbrains.pool.BulletPool;
+import ru.geekbrains.pool.ExplosionPool;
 
 public class EnemyShip extends Ship {
 
-    private Vector2 normalSpeed;
-    private final Vector2 primarySpeed = new Vector2(0, -0.5f);
-    private int explosionIndex = -1;
-    private TextureRegion[] normalRegions;
+    private static final Vector2 startV = new Vector2(0, -0.3f);
 
-    public EnemyShip(BulletPool bulletPool, Rect worldBounds) {
+    public EnemyShip(BulletPool bulletPool, ExplosionPool explosionPool, Rect worldBounds) {
         this.bulletPool = bulletPool;
+        this.explosionPool = explosionPool;
         this.worldBounds = worldBounds;
         this.bulletV = new Vector2();
         this.bulletPos = new Vector2();
-        this.normalSpeed = new Vector2();
     }
 
     @Override
     public void update(float delta) {
-        if (explosionIndex < 0) {
-            super.update(delta);
-            this.bulletPos.set(pos.x, pos.y - getHalfHeight());
-            if (this.getTop() <= worldBounds.getTop()) {
-                v.set(normalSpeed);
-            }
-        } else if (explosionIndex < explosionRegions.length) {
-            v.set(0, 0);
-            this.setRegions(explosionRegions);
-            this.setFrame(explosionIndex);
-            explosionIndex++;
+        super.update(delta);
+        if (getTop() < worldBounds.getTop()) {
+            v.set(v0);
         } else {
+            reloadTimer = 0.8f * reloadInterval;
+        }
+        this.bulletPos.set(pos.x, pos.y - getHalfHeight());
+        if (getBottom() < worldBounds.getBottom()) {
             destroy();
-            this.explosionIndex = -1;
-            this.setRegions(normalRegions);
-            this.setFrame(0);
-            v.set(primarySpeed);
         }
     }
 
@@ -49,7 +39,6 @@ public class EnemyShip extends Ship {
             TextureRegion[] regions,
             Vector2 v0,
             TextureRegion bulletRegion,
-            TextureRegion[] explosionRegions,
             float bulletHeight,
             Vector2 bulletV,
             int bulletDamage,
@@ -59,10 +48,8 @@ public class EnemyShip extends Ship {
             int hp
     ) {
         this.regions = regions;
-        this.normalRegions = regions;
         this.v0.set(v0);
         this.bulletRegion = bulletRegion;
-        this.explosionRegions = explosionRegions;
         this.bulletHeight = bulletHeight;
         this.bulletV.set(bulletV);
         this.bulletDamage = bulletDamage;
@@ -70,21 +57,21 @@ public class EnemyShip extends Ship {
         this.bulletSound = bulletSound;
         setHeightProportion(height);
         this.hp = hp;
-        normalSpeed.set(v0);
-        v.set(primarySpeed);
+        v.set(startV);
     }
 
-    public boolean checkForCrash(Ship anotherShip) {
-        if (!isOutside(worldBounds)) {
-            return (this.getBottom() <= anotherShip.getTop()
-                    && (this.getRight() >= anotherShip.getLeft() || this.getLeft() <= anotherShip.getRight()));
-        }
-        return false;
+    @Override
+    public void destroy() {
+        super.destroy();
+        reloadTimer = 0f;
     }
 
-    public void explode() {
-        if (explosionIndex < 0) {
-            this.explosionIndex = 0;
-        }
+    public boolean isCollision(Rect rect) {
+        return !(
+                rect.getRight() < getLeft()
+                        || rect.getLeft() > getRight()
+                        || rect.getBottom() > getTop()
+                        || rect.getTop() < pos.y
+        );
     }
 }

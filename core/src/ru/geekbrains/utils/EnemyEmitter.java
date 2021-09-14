@@ -48,7 +48,6 @@ public class EnemyEmitter {
     private final TextureRegion[] enemyMediumRegions;
     private final TextureRegion[] enemyBigRegions;
     private final TextureRegion bulletRegion;
-    private final TextureRegion[] explosionRegions;
 
     private final EnemyPool enemyPool;
 
@@ -60,7 +59,6 @@ public class EnemyEmitter {
         enemyMediumRegions = Regions.split(atlas.findRegion("enemy1"), 1, 2, 2);
         enemyBigRegions = Regions.split(atlas.findRegion("enemy2"), 1, 2, 2);
         bulletRegion = atlas.findRegion("bulletEnemy");
-        explosionRegions = Regions.split(atlas.findRegion("explosion"), 9, 9, 74);
     }
 
     public void generate(float delta) {
@@ -74,7 +72,6 @@ public class EnemyEmitter {
                         enemySmallRegions,
                         enemySmallV,
                         bulletRegion,
-                        explosionRegions,
                         ENEMY_SMALL_BULLET_HEIGHT,
                         enemySmallBulletV,
                         ENEMY_SMALL_BULLET_DAMAGE,
@@ -88,7 +85,6 @@ public class EnemyEmitter {
                         enemyMediumRegions,
                         enemyMediumV,
                         bulletRegion,
-                        explosionRegions,
                         ENEMY_MEDIUM_BULLET_HEIGHT,
                         enemyMediumBulletV,
                         ENEMY_MEDIUM_BULLET_DAMAGE,
@@ -102,7 +98,6 @@ public class EnemyEmitter {
                         enemyBigRegions,
                         enemyBigV,
                         bulletRegion,
-                        explosionRegions,
                         ENEMY_BIG_BULLET_HEIGHT,
                         enemyBigBulletV,
                         ENEMY_BIG_BULLET_DAMAGE,
