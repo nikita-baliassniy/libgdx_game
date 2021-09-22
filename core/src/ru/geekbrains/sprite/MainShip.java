@@ -15,7 +15,8 @@ public class MainShip extends Ship {
     private static final float HEIGHT = 0.15f;
     private static final float BOTTOM_MARGIN = 0.05f;
     private static final int INVALID_POINTER = -1;
-    private static final int HP = 100;
+    private static final int MAX_HP = 100;
+    private static final int HP = MAX_HP;
     private static final float RELOAD_INTERVAL = 0.2f;
 
     private boolean pressedLeft;
@@ -147,6 +148,13 @@ public class MainShip extends Ship {
                 break;
         }
         return false;
+    }
+
+    public void addHP(int hp) {
+        this.hp += hp;
+        if (this.hp > MAX_HP) {
+            this.hp = MAX_HP;
+        }
     }
 
     public boolean isCollision(Rect rect) {
