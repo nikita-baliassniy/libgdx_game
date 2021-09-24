@@ -87,4 +87,14 @@ public class Sprite extends Rect {
                 angle
         );
     }
+
+    public boolean isCollision(Rect rect) {
+        return !(
+                rect.getRight() < getLeft()
+                        || rect.getLeft() > getRight()
+                        || rect.getBottom() > getTop()
+                        || rect.getTop() < pos.y
+        );
+    }
+
 }

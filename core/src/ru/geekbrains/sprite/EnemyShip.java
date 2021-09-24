@@ -60,13 +60,4 @@ public class EnemyShip extends Ship {
         v.set(startV);
         reloadTimer = 0f;
     }
-
-    public boolean isCollision(Rect rect) {
-        return !(
-                rect.getRight() < getLeft()
-                        || rect.getLeft() > getRight()
-                        || rect.getBottom() > getTop()
-                        || rect.getTop() < pos.y
-        );
-    }
 }
